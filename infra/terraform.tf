@@ -4,7 +4,7 @@
 # https://github.com/cloudposse/terraform-aws-tfstate-backend#usage
 module "terraform_state_backend" {
   source      = "cloudposse/tfstate-backend/aws"
-  version     = "1.5.0"
+  version     = "1.7.0"
   enabled     = false
 
   profile = local.profile
