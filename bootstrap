@@ -1,4 +1,4 @@
-:!/bin/bash
+#!/bin/bash
 
 # Bootstrap cloudless-infra into existing project
 # Usage: curl -sL https://raw.githubusercontent.com/ql4b/cloudless-infra/main/bootstrap | bash
