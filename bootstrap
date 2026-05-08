@@ -1,7 +1,7 @@
-#!/bin/bash
+:!/bin/bash
 
 # Bootstrap cloudless-infra into existing project
-# Usage: curl -sL https://raw.githubusercontent.com/skunxicat/cloudless-infra/main/bootstrap | bash
+# Usage: curl -sL https://raw.githubusercontent.com/ql4b/cloudless-infra/main/bootstrap | bash
 
 set -e
 
@@ -22,11 +22,11 @@ done
 if [ -n "$GITHUB_TOKEN" ]; then
   # Private repo with token
   curl -sL -H "Authorization: token $GITHUB_TOKEN" \
-    https://github.com/skunxicat/cloudless-infra/archive/refs/heads/main.tar.gz | \
+    https://github.com/ql4b/cloudless-infra/archive/refs/heads/main.tar.gz | \
     tar --strip-components=1 -xzf -
 else
   # Public repo
-  curl -sL https://github.com/skunxicat/cloudless-infra/archive/refs/heads/main.tar.gz | \
+  curl -sL https://github.com/ql4b/cloudless-infra/archive/refs/heads/main.tar.gz | \
     tar --strip-components=1 -xzf -
 fi
 
