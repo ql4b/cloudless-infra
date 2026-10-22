@@ -77,21 +77,3 @@ tf init
 tf apply --auto-approve
 tf output -json env | jq
 ```
-
-## Releases
-
-Releases are automated with [semantic-release](https://semantic-release.gitbook.io/)
-driven by [Conventional Commits](https://www.conventionalcommits.org/). The
-`.github/workflows/release.yml` workflow validates (`terraform fmt`, `init`,
-`validate` against `infra/`) and, on push to `main`, cuts a version tag,
-GitHub release, and `CHANGELOG.md` entry.
-
-Commit messages determine the version bump:
-
-- `fix:` / `perf:` → patch release
-- `feat:` → minor release
-- `feat!:` or a `BREAKING CHANGE:` footer → major release
-- `docs:` / `chore:` → recorded in the changelog, no release on their own
-
-This is a project scaffold (not a published module), so only functional
-changes cut a release.
