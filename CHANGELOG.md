@@ -1,3 +1,7 @@
+## <small>1.0.1 (2026-10-22)</small>
+
+* fix: strip release machinery from bootstrapped projects (#3) ([951e877](https://github.com/ql4b/cloudless-infra/commit/951e877)), closes [#3](https://github.com/ql4b/cloudless-infra/issues/3)
+
 ## 1.0.0 (2026-10-22)
 
 * feat: add semantic-release automation and harden bootstrap (#2) ([9cc9e4e](https://github.com/ql4b/cloudless-infra/commit/9cc9e4e)), closes [#2](https://github.com/ql4b/cloudless-infra/issues/2)
