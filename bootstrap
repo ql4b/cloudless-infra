@@ -3,30 +3,39 @@
 # Bootstrap cloudless-infra into existing project
 # Usage: curl -sL https://raw.githubusercontent.com/ql4b/cloudless-infra/main/bootstrap | bash
 
-set -e
+set -euo pipefail
+
+# Preflight: required tools
+for tool in curl tar; do
+  if ! command -v "$tool" >/dev/null 2>&1; then
+    echo "Error: '$tool' is required but not installed." >&2
+    exit 1
+  fi
+done
 
 PROJECT_NAME=${1:-$(basename "$PWD")}
-BACKUP_FILES=("README.md" ".gitignore" ".env.example")
+BACKUP_FILES=("README.md" ".env.example")
 REMOVE_FILES=("bootstrap" "README.md" ".env.example")
 
 echo "Bootstrapping cloudless-infra for project: $PROJECT_NAME"
 
-# Backup common files
+# Backup common files (plus .gitignore, handled explicitly as a merge below)
 
 
 for f in "${BACKUP_FILES[@]}"; do
   [ -f "$f" ] && cp "$f" "$f.bak"
 done
+[ -f .gitignore ] && cp .gitignore .gitignore.bak
 
 # Download and extract without git history
-if [ -n "$GITHUB_TOKEN" ]; then
+if [ -n "${GITHUB_TOKEN:-}" ]; then
   # Private repo with token
-  curl -sL -H "Authorization: token $GITHUB_TOKEN" \
+  curl -fsSL -H "Authorization: token $GITHUB_TOKEN" \
     https://github.com/ql4b/cloudless-infra/archive/refs/heads/main.tar.gz | \
     tar --strip-components=1 -xzf -
 else
   # Public repo
-  curl -sL https://github.com/ql4b/cloudless-infra/archive/refs/heads/main.tar.gz | \
+  curl -fsSL https://github.com/ql4b/cloudless-infra/archive/refs/heads/main.tar.gz | \
     tar --strip-components=1 -xzf -
 fi
 
@@ -36,12 +45,18 @@ fi
   cat .env.example
 } >> .env
 
-# if .gitignore.bak exists, append to it
-if [ -f .gitignore ]; then
+# Merge .gitignore: host's original is the base, cloudless-infra's entries are
+# appended (deduped, delimited) only if the host didn't already have them.
+# If the host had no .gitignore, the extracted cloudless one stays as-is.
+if [ -f .gitignore.bak ]; then
+  cloudless_ignore=$(cat .gitignore)   # the just-extracted cloudless-infra one
   {
-    echo -e "\n# cloudless-infra"
-    cat .gitignore
-  } >> .gitignore.bak
+    cat .gitignore.bak                 # host's original, intact, first
+    echo ""
+    echo "# cloudless-infra"
+    comm -13 <(sort -u .gitignore.bak) <(printf '%s\n' "$cloudless_ignore" | sort -u)
+  } > .gitignore
+  rm -f .gitignore.bak
 fi
 
 # Remove REMOVE_FILES
@@ -54,10 +69,7 @@ for f in "${BACKUP_FILES[@]}"; do
   [ -f "$f.bak" ] && mv "$f.bak" "$f"
 done
 
-# Add . to the $PATH
-export PATH="$(pwd):$PATH"
-echo "export PATH=\"$(pwd):$PATH\"" >> ~/.zshrc
-
 echo "✓ Cloudless infra bootstrapped in current directory"
-echo "✓ Edit .env with your settings"
-echo "✓ Run: ./tf init"
+echo "✓ Edit .env with your settings (NAME, NAMESPACE, AWS_PROFILE, AWS_REGION)"
+echo "✓ Load the environment and tf wrapper:  source ./activate"
+echo "✓ Then run: tf init"

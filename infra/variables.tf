@@ -1,19 +1,19 @@
 variable "name" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "namespace" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "profile" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "region" {
-    type = string
-    default = null
+  type    = string
+  default = null
 }

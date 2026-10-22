@@ -21,6 +21,6 @@ locals {
     module.label.namespace != "" ? module.label.namespace : null,
     module.label.name != "" ? module.label.name : null
   ]))}"
-  pascal_prefix      = replace(title(module.label.id), "/\\W+/", "")
+  pascal_prefix = replace(title(module.label.id), "/\\W+/", "")
 }
 
